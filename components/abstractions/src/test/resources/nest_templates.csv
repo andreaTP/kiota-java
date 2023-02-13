@@ -1,0 +1,26 @@
+template, nested, arguments, result
+/city, country/{name}, {"name": "Fred"}, /city/country/Fred
+/city/, /country/{name}, {"name": "Fred"}, /city/country/Fred
+/city, /country/{name}, {"name": "Fred"}, /city/country/Fred
+/poetry, /{?max}, {"max": 10}, /poetry?max=10
+/poetry, {?max}, {"max": 10}, /poetry?max=10
+/, /hello/{name}, {"name": "Fred"}, /hello/Fred
+"", /hello/{name}, {"name": "Fred"}, /hello/Fred
+/test/, /hello/{name}, {"name": "Fred"}, /test/hello/Fred
+{var}, {var2} ,"{'var': 'foo', 'var2': 'bar'}", foo/bar
+/book{/id}, /author{/authorId}, "{'id': 'foo', 'authorId': 'bar'}", /book/foo/author/bar
+{var}/, {var2} , "{'var': 'foo', 'var2': 'bar'}", foo/bar
+{var}, /{var2}, "{'var': 'foo', 'var2': 'bar'}", "foo/bar"
+{var}{?q}, /{var2}, "{'var': 'foo', 'var2': 'bar', 'q': 'test'}", foo/bar?q=test
+{var}{?q}, {var2} , "{'var': 'foo', 'var2': 'bar', 'q': 'test'}", foo/bar?q=test
+{var}{#hash}, {var2}, "{'var': 'foo', 'var2': 'bar', 'hash': 'test'}", foo/bar#test
+/, {?req*}, {"req": {"var": "foo", "var2": "null"}}, /?var=foo
+/, {?keys*}{?keys2*}, {"keys": {"var": "foo", "var2": "null"}}, /?var=foo
+/, {?keys*}{?keys2*}, {"keys": {"var": null}, "keys2": {"var2": null}}, /
+/, {?keys*}{?keys2*}, {"keys": {"var": "foo"}, "keys2": {"var2": null}}, /?var=foo
+/, {?keys*}{?keys2*}, {"keys": {"var": "foo"}, "keys2": {"var2": "bar"}}, /?var=foo&var2=bar
+/, {?keys*}{?keys2*}, {"keys": {"var": null}, "keys2": {"var2": "bar"}}, /?var2=bar
+/, {?keys*}{&keys2*}, {"keys": {"var": null}, "keys2": {"var2": null}}, /
+/, {?keys*}{&keys2*}, {"keys": {"var": "foo"}, "keys2": {"var2": null"}}, /?var=foo
+/, {?keys*}{&keys2*}, {"keys": {"var": "foo"}, "keys2": {"var2": "bar"}}| /?var=foo&var2=bar
+/, {?keys*}{&keys2*}, {"keys": {"var": null}, "keys2": {"var2": "bar"}}, /&var2=bar
