@@ -745,12 +745,13 @@ public class OkHttpRequestAdapter implements com.microsoft.kiota.RequestAdapter 
                 }
             }
             boolean obsOptionsPresent = false;
-            for(final RequestOption option : requestInfo.getRequestOptions()) {
-                if(option.getType() == obsOptions.getType()) {
-                    obsOptionsPresent = true;
-                }
-                requestBuilder.tag(option.getType(), option);
-            }
+//            TODO: FIXME
+//            for(final RequestOption option : requestInfo.getRequestOptions()) {
+//                if(option.getType() == obsOptions.getType()) {
+//                    obsOptionsPresent = true;
+//                }
+//                requestBuilder.tag(option.getType(), option);
+//            }
             if (!obsOptionsPresent) {
                 requestBuilder.tag(obsOptions.getType(), obsOptions);
             }

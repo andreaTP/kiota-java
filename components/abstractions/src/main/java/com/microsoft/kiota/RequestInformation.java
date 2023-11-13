@@ -34,56 +34,56 @@ import io.github.stduritemplate.StdUriTemplate;
 
 
 /** This class represents an abstract HTTP request. */
-public class RequestInformation {
+public class RequestInformation <T extends BaseRequestConfiguration> {
     /** Creates a new instance of the request information class. */
     public RequestInformation() { //Default constructor
+    }
+    /**
+     * Creates a new instance of the request information class.
+     * @param requestConfiguration The user provided configuration for the request.
+     */
+    public RequestInformation(@Nonnull final T requestConfiguration) {
+        this.requestConfiguration = Objects.requireNonNull(requestConfiguration);
     }
     /**
      * Creates a new instance of the request information class.
      * @param method The HTTP method for the request.
      * @param urlTemplate The url template for the request.
      * @param pathParameters The path parameters for the request.
+     * @param requestConfiguration The user provided configuration for the request.
      */
-    public RequestInformation(@Nonnull final HttpMethod method, @Nonnull final String urlTemplate, @Nonnull final Map<String, Object> pathParameters) {
+    public RequestInformation(@Nonnull final HttpMethod method, @Nonnull final String urlTemplate, @Nonnull final Map<String, Object> pathParameters, @Nonnull final T requestConfiguration) {
         this.httpMethod = Objects.requireNonNull(method);
         this.urlTemplate = Objects.requireNonNull(urlTemplate);
         this.pathParameters = Objects.requireNonNull(pathParameters);
+        this.requestConfiguration = Objects.requireNonNull(requestConfiguration);
     }
     /**
      * Configures the request information based on the request configuration and the query parameters getter.
-     * @param <T> The type of the request configuration.
-     * @param requestConfiguration The request configuration to apply to the request information.
-     * @param configurationFactory The factory to create the request configuration from.
-     */
-    public <T extends BaseRequestConfiguration> void configure(@Nullable final java.util.function.Consumer<T> requestConfiguration, @Nonnull final java.util.function.Supplier<T> configurationFactory) {
-        configure(requestConfiguration, configurationFactory, null);
-    }
-    /**
-     * Configures the request information based on the request configuration and the query parameters getter.
-     * @param <T> The type of the request configuration.
-     * @param requestConfiguration The request configuration to apply to the request information.
-     * @param configurationFactory The factory to create the request configuration from.
      * @param queryParametersGetter The function to get the query parameters from the request configuration.
      */
-    public <T extends BaseRequestConfiguration> void configure(@Nullable final java.util.function.Consumer<T> requestConfiguration, @Nonnull final java.util.function.Supplier<T> configurationFactory, @Nullable final java.util.function.Function<T, Object> queryParametersGetter) {
-        Objects.requireNonNull(configurationFactory);
-        if (requestConfiguration == null)  {
-            return;
-        }
-        final T requestConfig = configurationFactory.get();
-        requestConfiguration.accept(requestConfig);
+    public void configure(@Nullable final java.util.function.Function<T, Object> queryParametersGetter) {
         if (queryParametersGetter != null) {
-            addQueryParameters(queryParametersGetter.apply(requestConfig));
+            addQueryParameters(queryParametersGetter.apply(requestConfiguration));
         }
-        headers.putAll(requestConfig.headers);
-        addRequestOptions(requestConfig.options);
+        headers.putAll(requestConfiguration.headers);
+        addRequestOptions(requestConfiguration.options);
     }
+    /**
+     * Gets the request configuration.
+     * @return the request options for this request.
+     */
+    @Nonnull
+    public T getRequestConfiguration() { return requestConfiguration; }
     /** The url template for the current request */
     @Nullable
     public String urlTemplate;
     /** The path parameters for the current request */
     @Nullable
     public Map<String, Object> pathParameters = new HashMap<>();
+    /** The request configuration */
+    @Nullable
+    public T requestConfiguration;
     private URI uri;
     /** Gets the URI of the request. 
      * @throws URISyntaxException when the uri template is invalid.
